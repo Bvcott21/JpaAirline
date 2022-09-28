@@ -47,9 +47,7 @@ public class AirplaneDao implements CRUD<Airplane> {
             return airplaneFound;
         } else {
             throw new AirplaneNotFoundException("Airplane not found, please try again");
-        }
-
-        
+        }  
     }
 
     @Override
@@ -66,6 +64,7 @@ public class AirplaneDao implements CRUD<Airplane> {
             em.close();
             return airplane;
         } else {
+            em.close();
             throw new AirplaneNotFoundException("The airplane you are trying to update doesn't exist, perhaps you want to create a new one?");
         }
 
@@ -80,7 +79,10 @@ public class AirplaneDao implements CRUD<Airplane> {
             em.getTransaction().begin();
             em.remove(airplaneFound);
             em.getTransaction().commit();
+
+            em.close();
         } else {
+            em.close();
             throw new AirplaneNotFoundException("Couldn't delete. Airplane not found.");
         }
         

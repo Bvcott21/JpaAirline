@@ -43,7 +43,7 @@ public class AirplaneDaoTest {
     void testCreate_createsAnAirplane() {
         Airplane airplane = new Airplane("Boeing 737", 188);
         airplaneDao.create(airplane);
-        assertEquals(airplane.getAirplaneModel(), airplaneDao.findAll().get(0).getAirplaneModel());
+        assertEquals(airplane, airplaneDao.findAll().get(0));
     }
 
     @Test
