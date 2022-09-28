@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.2"
+                xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+ 
+                <!-- Persistence Unit - Name of entities we want to be persisted -->
+                <persistence-unit name="JpaAirline">
+ 
+                                <!-- Persistence Provider details - Who will be doing all of the hard work (Hibernate) -->
+                                <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>                 
+                                <!-- Name of the Java Entity that will be managed by JPA -->
+                               
+                                <!-- Properties section - Used for details about the DB -->
+                                <properties>
+                                                <property name="javax.persistence.jdbc.driver"
+                                                                value="org.h2.Driver" />
+                                                <property name="javax.persistence.jdbc.url"
+                                                                value="jdbc:h2:./airlinedb" />
+ 
+                                                <property name="javax.persistence.jdbc.user" value="sa" />
+                                                <property name="javax.persistence.jdbc.password" value="" />
+                                               
+                                                <!-- Telling Hibernate which language we want it to talk to the DB  -->     
+                                                <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+ 
+                                                <!-- Possible values: drop-and-create, create, drop, none -->
+                                                <property
+                                                                name="javax.persistence.schema-generation.database.action"
+                                                                value="drop-and-create" />
+ 
+                                                <!-- Shows the jdbc SQL in the console -->
+                                                <property name="hibernate.format_sql" value="true" />
+                                                                <property name="hibernate.use_sql_comments" value="true" />
+                                                                <property name = "hibernate.show_sql" value = "true" />
+ 
+                                </properties>
+ 
+                </persistence-unit>
+</persistence>
