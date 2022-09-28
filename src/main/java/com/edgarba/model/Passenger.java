@@ -1,33 +1,33 @@
 package com.edgarba.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 
-//@Entity
+@Entity
 public class Passenger {
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "passenger_gen")
-    //@SequenceGenerator(name = "passenger_gen", sequenceName = "passenger_seq", allocationSize=1)
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "passenger_gen")
+    @SequenceGenerator(name = "passenger_gen", sequenceName = "passenger_seq", allocationSize=1)
     private long passengerId;
     private String firstname, lastName;
     private int age;
-    //@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<Document> documents = new ArrayList<>();
 
     public Passenger() {}
 
-    public Passenger(String firstname, String lastName, int age) {
+    public Passenger(String firstname, String lastName) {
         this.firstname = firstname;
         this.lastName = lastName;
-        this.age = age;
     }
 
     public long getPassengerId() {
@@ -54,7 +54,7 @@ public class Passenger {
         return age;
     }
 
-    public void setAge(int age) {
+    private void setAge(int age) {
         this.age = age;
     }
 
@@ -64,6 +64,7 @@ public class Passenger {
 
     public void addDocument(Document document) {
         documents.add(document);
+        this.setAge(LocalDate.now().getYear() - document.getDateOfBirth().getYear());
     }
 
     @Override
