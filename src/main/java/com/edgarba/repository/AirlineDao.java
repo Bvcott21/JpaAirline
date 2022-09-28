@@ -1,7 +1,6 @@
 package com.edgarba.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.edgarba.model.Airline;
 import com.edgarba.repository.utility.CRUD;
@@ -44,22 +43,35 @@ public class AirlineDao implements CRUD<Airline>{
     @Override
     public Airline findById(long id) throws AirlineNotFoundException {
         EntityManager em = emf.createEntityManager();
-        Optional<Airline> airlineFound = Optional.ofNullable(em.find(Airline.class, id));
+        
+        Airline airlineFound = em.find(Airline.class, id);
+        
         em.close();
-        return airlineFound;
+
+        if(airlineFound != null) {
+            return airlineFound;
+        } else {
+            throw new AirlineNotFoundException("Airline not found, please try again");
+        }
     }
 
     @Override
-    public Airline update(Airline airline) {
+    public Airline update(Airline airline) throws AirlineNotFoundException {
         EntityManager em = emf.createEntityManager();
         
-        em.getTransaction().begin();
-        airline = em.merge(airline);
-        em.getTransaction();
+        Airline airlineFound = em.find(Airline.class, airline.getAirlineId());
+        
+        if(airlineFound != null) {
+            em.getTransaction().begin();
+            airline = em.merge(airline);
+            em.getTransaction().commit();
 
-        em.close();
-
-        return airline;
+            em.close();
+            return airline;
+        } else {
+            em.close();
+            throw new AirlineNotFoundException("The airline you are trying to update doesn't exist, perhaps you want to create a new one?");
+        }
     }
 
     @Override
@@ -70,12 +82,13 @@ public class AirlineDao implements CRUD<Airline>{
             em.getTransaction().begin();
             em.remove(airlineFound);
             em.getTransaction().commit();
+
+            em.close();
         } else {
+
+            em.close();
             throw new AirlineNotFoundException("Airline not found.");
         }
-        
-        em.close();
-        
     }
     
 }
