@@ -9,25 +9,24 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 
-//@Entity
+@Entity
 public class Flight {
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "flight_gen")
-    //@SequenceGenerator(name = "flight_gen", sequenceName="flight_seq", allocationSize=1)
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "flight_gen")
+    @SequenceGenerator(name = "flight_gen", sequenceName="flight_seq", allocationSize=1)
     private long flightId;
-    //@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Airplane airplane;
     private String flightCode;
     private String origin, destination;
     private LocalDateTime departureDateTime, arrivalDateTime;
     private int availableSeats;
     private double ticketPrice;
-    //@OneToMany
+    @OneToMany
     private List<Booking> bookings = new ArrayList<Booking>();
 
     public Flight() {}

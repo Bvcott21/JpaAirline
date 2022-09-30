@@ -1,9 +1,15 @@
 package com.edgarba.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,16 +17,24 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 
-//@Entity
+@Entity
 public class Booking {
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "booking_gen")
-    //@SequenceGenerator(name = "booking_gen", sequenceName = "booking_seq", allocationSize = 1)
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "booking_gen")
+    @SequenceGenerator(name = "booking_gen", sequenceName = "booking_seq", allocationSize = 1)
     private long bookingId;
-    //@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Flight flight;
-    //@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Map<Passenger, Luggage> passengers;
+
+    
+    @OneToMany(
+        cascade = {CascadeType.PERSIST, CascadeType.MERGE}, 
+        fetch = FetchType.EAGER)
+    private List<Passenger> passengers = new ArrayList<>();
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<Luggage> luggage = new ArrayList<>();
 
     public Booking() {}
     
@@ -36,17 +50,26 @@ public class Booking {
         return flight;
     }
 
-    public Map<Passenger, Luggage> getPassengers() {
+    public List<Passenger> getPassengers() {
         return passengers;
     }
 
-    public void addPassenger(Passenger passenger, Luggage luggage) {
-        passengers.put(passenger, luggage);
+    public List<Luggage> getLuggage() {
+        return luggage;
     }
 
-    @Override
-    public String toString() {
-        return "Booking [bookingId=" + bookingId + ", flight=" + flight + ", passengers=" + passengers + "]";
+    public void addPassenger(Passenger passenger) {
+        passengers.add(passenger);
+    }
+
+    public void addLuggage(Luggage individualLuggage) {
+        luggage.add(individualLuggage);
+    }
+
+    public void removePassenger(Passenger passenger) {
+        if(passengers.contains(passenger)) {
+            passengers.remove(passenger);
+        }
     }
 
     @Override
@@ -55,6 +78,7 @@ public class Booking {
         int result = 1;
         result = prime * result + (int) (bookingId ^ (bookingId >>> 32));
         result = prime * result + ((flight == null) ? 0 : flight.hashCode());
+        result = prime * result + ((luggage == null) ? 0 : luggage.hashCode());
         result = prime * result + ((passengers == null) ? 0 : passengers.hashCode());
         return result;
     }
@@ -75,6 +99,11 @@ public class Booking {
                 return false;
         } else if (!flight.equals(other.flight))
             return false;
+        if (luggage == null) {
+            if (other.luggage != null)
+                return false;
+        } else if (!luggage.equals(other.luggage))
+            return false;
         if (passengers == null) {
             if (other.passengers != null)
                 return false;
@@ -82,7 +111,12 @@ public class Booking {
             return false;
         return true;
     }
-    
+
+    @Override
+    public String toString() {
+        return "Booking [bookingId=" + bookingId + ", flight=" + flight + ", luggage=" + luggage + ", passengers="
+                + passengers + "]";
+    }
     
     
 }
